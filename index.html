@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VISANG OnlyOne Needs Finder</title>
+    <title>비상 온리원 맞춤형 니즈 파인더</title>
     <!-- 외부 라이브러리 로드 (React, Tailwind, Babel) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -26,7 +26,7 @@
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
         /* 버튼 클릭 효과 */
         .btn-active:active { transform: scale(0.96); transition: transform 0.1s; }
@@ -38,7 +38,11 @@
 
         /* 이미지 오버레이 */
         .img-overlay {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
+        }
+
+        .sol-gradient {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
         }
     </style>
 </head>
@@ -46,9 +50,9 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect, useRef } = React;
 
-        // 아이콘 에러 방지를 위한 인라인 SVG
+        // 아이콘 인라인 SVG
         const Icons = {
             Baby: () => (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></svg>
@@ -65,19 +69,19 @@
             ChevronRight: () => (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             ),
-            Zap: () => (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14.5 14 3l-2.5 8.5H20L10 21l2.5-8.5H4z"/></svg>
+            Lightbulb: () => (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
             ),
             Check: () => (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             ),
-            Monitor: () => (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+            MessageCircle: () => (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-11.7 8.38 8.38 0 0 1 3.8.9L21 3z"/></svg>
             )
         };
 
         const App = () => {
-            const [stage, setStage] = useState('select'); // select, concerns, solution, demo, final
+            const [stage, setStage] = useState('select'); // select, concerns, strategy, solution, final
             const [category, setCategory] = useState(null); 
             const [selectedConcern, setSelectedConcern] = useState(null);
 
@@ -86,31 +90,81 @@
                     title: "온리원 키즈 (4~7세)",
                     img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600",
                     concerns: [
-                        { id: 1, text: "한글/수 떼기, 늦어지면 어쩌죠?", sol: "놀이가 공부가 되는 0.1% 메타인지 학습법으로 자연스러운 습득", demo: "태블릿의 [한글 보물찾기] 메뉴를 통해 아이가 직접 놀이하며 글자를 익히는 과정을 보여주세요." },
-                        { id: 2, text: "스마트 기기 노출, 중독될까 봐 무서워요.", sol: "학습 전용 모드와 AI 안심 관리 시스템으로 올바른 디지털 습관 형성", demo: "[학습 리포트]와 [안심 잠금] 기능을 시연하여 유해 환경 차단 시스템을 확인시켜주세요." },
-                        { id: 3, text: "벌써부터 공부를 지겨워하면 어떡하나요?", sol: "아이의 반응에 즉각 화답하는 인터랙티브 콘텐츠로 '공부 재미' 발견", demo: "[개념 송]과 캐릭터 상호작용 화면을 시연하며 공부가 아닌 놀이로 느끼게 하세요." },
-                        { id: 4, text: "초등학교 입학 준비, 무엇을 해야 할까요?", sol: "학교 교과 과정과 100% 연계된 입학 준비 완성 커리큘럼", demo: "[1학년 미리보기] 코너의 교과서 연계 콘텐츠를 실제 교과서와 비교하며 보여주세요." },
-                        { id: 5, text: "사고력과 창의력을 어떻게 길러주나요?", sol: "정답만 찾는 공부가 아닌, '왜?'를 생각하게 하는 질문 중심 학습", demo: "[창의 코딩]이나 [사고력 퀴즈] 기능을 통해 아이가 생각하는 힘을 기르는 과정을 보여주세요." }
+                        { 
+                            id: 1, 
+                            text: "한글/수 떼기, 늦어지면 어쩌죠?", 
+                            strategy: "유아기 학습의 핵심은 성취감입니다. 단순 반복 암기가 아니라 놀이 속에서 자연스럽게 원리를 깨닫는 '감각 학습'이 선행되어야 아이가 공부에 대한 긍정적인 정서를 형성할 수 있습니다.",
+                            sol: "놀이가 공부가 되는 0.1% 메타인지 학습법" 
+                        },
+                        { 
+                            id: 2, 
+                            text: "스마트 기기 노출, 중독될까 봐 무서워요.", 
+                            strategy: "무조건적인 차단은 역효과를 냅니다. 기기 자체를 학습 전용으로 통제하고, 아이 스스로 학습 시간을 지키도록 만드는 시스템 기반의 올바른 디지털 사용 습관이 필요합니다.",
+                            sol: "AI 안심 관리 시스템을 통한 자기조절력 형성" 
+                        },
+                        { 
+                            id: 3, 
+                            text: "벌써부터 공부를 지겨워하면 어떡하나요?", 
+                            strategy: "아이가 공부를 '일'로 느끼기 때문입니다. 일방적인 주입식이 아니라 아이의 반응에 캐릭터가 상호작용하는 인터랙티브 환경을 조성하여 공부를 즐거운 '활동'으로 바꿔야 합니다.",
+                            sol: "아이의 반응에 화답하는 감성 인터랙티브 콘텐츠" 
+                        },
+                        { 
+                            id: 4, 
+                            text: "초등학교 입학 준비, 무엇을 해야 할까요?", 
+                            strategy: "입학 전 가장 중요한 것은 '학교 규칙'과 '교과 기초'의 적응입니다. 1학년 교과서와 연계된 내용을 미리 경험해 봄으로써 입학 후 낯선 환경에서도 자신감을 유지하게 해야 합니다.",
+                            sol: "교과 100% 연계형 입학 준비 완성 커리큘럼" 
+                        },
+                        { 
+                            id: 5, 
+                            text: "사고력과 창의력을 어떻게 길러주나요?", 
+                            strategy: "정답을 찾는 연습보다 '질문'을 던지는 연습이 중요합니다. 현상을 보고 '왜?'라고 생각할 수 있는 시각 자료와 다양한 해결 방법을 고민하게 만드는 사고력 특화 훈련이 병행되어야 합니다.",
+                            sol: "질문 중심의 사고력 및 창의 융합 학습" 
+                        },
                     ]
                 },
                 elementary: {
                     title: "온리원 초등 (8~13세)",
                     img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600",
                     concerns: [
-                        { id: 1, text: "공부 습관이 안 잡혀서 매일 싸워요.", sol: "매일 30분, 스스로 계획하고 실천하는 AI 코칭 시스템", demo: "[오늘의 학습] 투두리스트와 보상 시스템(별 포인트)을 시연하여 자기주도 습관 형성을 보여주세요." },
-                        { id: 2, text: "학원 시간표 채우기에 급급한 느낌이에요.", sol: "학원 뺑뺑이 대신, 부족한 부분만 골라 채우는 고밀도 맞춤 학습", demo: "[취약점 진단] 결과표를 보여주며 전체 공부가 아닌 '모르는 것'만 공부하는 효율성을 강조하세요." },
-                        { id: 3, text: "분명히 아는 건데 자꾸 틀려와요.", sol: "‘아는 착각’을 제거하고 메타인지 인출 학습으로 완벽한 이해", demo: "[설명하기] 기능을 통해 아이가 직접 목소리로 녹음하고 AI 피드백을 받는 과정을 시연하세요." },
-                        { id: 4, text: "서술형 문제와 독해력을 너무 어려워해요.", sol: "어휘부터 구조까지 짚어주는 문해력 특화 솔루션", demo: "[문해력 특강] 메뉴의 지문 분석 기능과 서술형 첨삭 지도 과정을 시연해 주세요." },
-                        { id: 5, text: "학년이 올라갈수록 성적 편차가 심해져요.", sol: "학년별 골든타임을 놓치지 않는 계통 중심 학습 관리", demo: "[수학 계통도]를 펼쳐서 현재 단원이 나중에 어떻게 연결되는지 시각적으로 보여주세요." }
+                        { 
+                            id: 1, 
+                            text: "공부 습관이 안 잡혀서 매일 싸워요.", 
+                            strategy: "습관은 의지가 아니라 '환경'이 만듭니다. 매일 정해진 시간에 학습 기기를 켜고, AI 코치가 오늘의 할 일을 제안하며, 성취에 따른 보상을 즉각 제공하는 선순환 루프를 구축해야 합니다.",
+                            sol: "스스로 계획하고 실천하는 AI 데일리 코칭" 
+                        },
+                        { 
+                            id: 2, 
+                            text: "학원 시간표 채우기에 급급한 느낌이에요.", 
+                            strategy: "학습량만 늘린다고 성적이 오르지 않습니다. 이미 아는 내용은 과감히 생략하고, 부족한 단원과 취약한 개념만 콕 집어 공부하는 '고밀도 효율 학습'으로 전환해야 할 시기입니다.",
+                            sol: "취약점만 완벽 공략하는 데이터 기반 맞춤 학습" 
+                        },
+                        { 
+                            id: 3, 
+                            text: "분명히 아는 건데 자꾸 틀려와요.", 
+                            strategy: "눈으로 본 것을 안다고 착각하는 '가짜 지식' 때문입니다. 직접 입으로 설명하거나 인출해 보지 않은 지식은 실전에서 무너집니다. 아는 것과 모르는 것을 완벽히 가려내는 훈련이 필요합니다.",
+                            sol: "메타인지 인출 학습을 통한 '아는 착각' 제거" 
+                        },
+                        { 
+                            id: 4, 
+                            text: "서술형 문제와 독해력을 너무 어려워해요.", 
+                            strategy: "문해력의 핵심은 어휘력과 구조 파악입니다. 긴 지문에서 핵심 키워드를 찾고, 자신의 생각을 논리적으로 서술하는 힘은 체계적인 문해력 특화 솔루션을 통해 단계별로 길러야 합니다.",
+                            sol: "어휘부터 서술형 첨삭까지 짚어주는 문해력 특화" 
+                        },
+                        { 
+                            id: 5, 
+                            text: "학년이 올라갈수록 성적 편차가 심해져요.", 
+                            strategy: "기초 개념이 연결되지 않아 발생하는 현상입니다. 이전 학년에서 놓친 개념이 현재 학습의 발목을 잡지 않도록, 단원 간의 연계성을 시각적으로 확인하고 결손을 메우는 계통 학습이 필수입니다.",
+                            sol: "전 학년 연계 계통 중심의 학습 관리 시스템" 
+                        },
                     ]
                 }
             };
 
             const goBack = () => {
                 if (stage === 'concerns') setStage('select');
-                else if (stage === 'solution') setStage('concerns');
-                else if (stage === 'demo') setStage('solution');
-                else if (stage === 'final') setStage('demo');
+                else if (stage === 'strategy') setStage('concerns');
+                else if (stage === 'solution') setStage('strategy');
+                else if (stage === 'final') setStage('solution');
             };
 
             const goHome = () => {
@@ -121,10 +175,11 @@
 
             return (
                 <div className="flex items-center justify-center min-h-screen p-0 sm:p-4 bg-slate-200">
-                    <div className="relative w-full max-w-[480px] h-[100vh] sm:h-[850px] bg-white sm:rounded-[3.5rem] border-0 sm:border-[14px] border-slate-950 shadow-2xl overflow-hidden flex flex-col">
+                    {/* Tablet Frame */}
+                    <div className="relative w-full max-w-[480px] h-[100vh] sm:h-[850px] bg-white sm:rounded-[3rem] border-0 sm:border-[12px] border-slate-950 shadow-2xl overflow-hidden flex flex-col">
                         
-                        {/* 상단 네비게이션 바 */}
-                        <div className="pt-10 px-6 flex justify-between items-center bg-white border-b border-slate-100 pb-4 z-50">
+                        {/* 상단 네비게이션 */}
+                        <div className="pt-10 px-6 flex justify-between items-center bg-white border-b border-slate-50 pb-4 z-50">
                             <div className="flex items-center gap-3">
                                 {stage !== 'select' && (
                                     <button onClick={goBack} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 btn-active shadow-sm border border-slate-100">
@@ -132,12 +187,7 @@
                                     </button>
                                 )}
                                 <div className="h-8 flex items-center">
-                                    <img 
-                                        src="온리원로고.JPG" 
-                                        alt="VISANG OnlyOne" 
-                                        className="h-full object-contain"
-                                        onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}
-                                    />
+                                    <img src="온리원로고.JPG" alt="VISANG OnlyOne" className="h-full object-contain" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
                                     <span style={{display: 'none'}} className="font-black text-red-600 text-xl tracking-tighter italic">ONLY1</span>
                                 </div>
                             </div>
@@ -147,23 +197,25 @@
                         </div>
 
                         <div className="flex-grow overflow-hidden relative bg-white">
+                            
+                            {/* STEP 1: 대상 선택 */}
                             {stage === 'select' && (
                                 <div className="h-full flex flex-col p-10 justify-center animate-fade-in text-center">
                                     <div className="mb-12">
                                         <span className="text-orange-500 font-black text-xs uppercase tracking-[0.3em] mb-3 block">Consultation Start</span>
-                                        <h1 className="text-3xl font-black text-slate-900 leading-tight tracking-tighter">
-                                            "공부 구경"을 멈추고<br/><span className="text-orange-500 italic">"진짜 공부"</span>를 시작합니다.
+                                        <h1 className="text-3xl font-black text-slate-900 leading-tight tracking-tighter italic">
+                                            "공부 구경"을 멈추고<br/>"진짜 공부"를 시작합니다.
                                         </h1>
                                         <div className="w-12 h-1.5 bg-orange-500 mx-auto mt-6 rounded-full"></div>
                                     </div>
                                     <div className="grid grid-cols-1 gap-5">
-                                        <button onClick={() => {setCategory('kids'); setStage('concerns');}} className="group flex items-center gap-6 p-8 bg-pink-50 rounded-[2.5rem] border-2 border-transparent hover:border-pink-200 transition-all btn-active text-left shadow-sm">
-                                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md text-pink-500 group-hover:scale-110 transition-transform"><Icons.Baby /></div>
+                                        <button onClick={() => {setCategory('kids'); setStage('concerns');}} className="group relative flex items-center gap-6 p-8 bg-pink-50 rounded-[2.5rem] border-2 border-transparent hover:border-pink-200 transition-all btn-active text-left shadow-sm">
+                                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md text-pink-500"><Icons.Baby /></div>
                                             <div><h3 className="text-2xl font-black text-pink-900 mb-1">온리원 키즈</h3><p className="text-pink-600/70 font-bold text-sm">4세 ~ 7세 (유아/예비초)</p></div>
                                             <div className="ml-auto text-pink-300"><Icons.ChevronRight /></div>
                                         </button>
-                                        <button onClick={() => {setCategory('elementary'); setStage('concerns');}} className="group flex items-center gap-6 p-8 bg-blue-50 rounded-[2.5rem] border-2 border-transparent hover:border-blue-200 transition-all btn-active text-left shadow-sm">
-                                            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md text-blue-600 group-hover:scale-110 transition-transform"><Icons.Graduation /></div>
+                                        <button onClick={() => {setCategory('elementary'); setStage('concerns');}} className="group relative flex items-center gap-6 p-8 bg-blue-50 rounded-[2.5rem] border-2 border-transparent hover:border-blue-200 transition-all btn-active text-left shadow-sm">
+                                            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md text-blue-600"><Icons.Graduation /></div>
                                             <div><h3 className="text-2xl font-black text-blue-900 mb-1">온리원 초등</h3><p className="text-blue-600/70 font-bold text-sm">8세 ~ 13세 (초등학생)</p></div>
                                             <div className="ml-auto text-blue-300"><Icons.ChevronRight /></div>
                                         </button>
@@ -171,21 +223,18 @@
                                 </div>
                             )}
 
+                            {/* STEP 2: 고민 선택 */}
                             {stage === 'concerns' && category && (
                                 <div className="h-full flex flex-col animate-fade-in bg-slate-50">
                                     <div className="relative h-60 shrink-0">
                                         <img src={data[category].img} className="w-full h-full object-cover" alt="visual" />
                                         <div className="absolute inset-0 img-overlay flex flex-col justify-end p-8">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Icons.Zap />
-                                                <span className="font-black text-white/80 text-xs tracking-widest uppercase">{data[category].title}</span>
-                                            </div>
                                             <h2 className="text-3xl font-black text-white leading-tight">어머님의 가장 큰<br/>학습 고민은 무엇인가요?</h2>
                                         </div>
                                     </div>
                                     <div className="flex-grow p-6 space-y-3 overflow-y-auto custom-scrollbar">
                                         {data[category].concerns.map((item) => (
-                                            <button key={item.id} onClick={() => {setSelectedConcern(item); setStage('solution');}} className="w-full p-5 bg-white border border-slate-100 rounded-3xl text-left flex items-center gap-4 hover:border-orange-300 hover:shadow-lg transition-all group btn-active">
+                                            <button key={item.id} onClick={() => {setSelectedConcern(item); setStage('strategy');}} className="w-full p-5 bg-white border border-slate-100 rounded-3xl text-left flex items-center gap-4 hover:border-orange-300 hover:shadow-lg transition-all group btn-active">
                                                 <span className="font-bold text-slate-700 flex-grow leading-snug text-lg">{item.text}</span>
                                                 <div className="text-slate-300 group-hover:text-orange-500"><Icons.ChevronRight /></div>
                                             </button>
@@ -194,45 +243,60 @@
                                 </div>
                             )}
 
-                            {stage === 'solution' && selectedConcern && (
-                                <div className="h-full flex flex-col bg-slate-950 text-white p-10 text-center justify-center relative overflow-hidden animate-fade-in">
-                                    <div className="absolute top-[-10%] right-[-10%] w-80 h-80 bg-orange-600 rounded-full blur-[120px] opacity-30 animate-pulse"></div>
-                                    <div className="z-10 bg-white/10 p-7 rounded-[2.5rem] border border-white/20 mb-8 w-fit mx-auto text-yellow-300 shadow-2xl"><Icons.Zap /></div>
-                                    <div className="z-10 space-y-8">
-                                        <h3 className="text-xl font-bold opacity-60">"{selectedConcern.text}"</h3>
-                                        <p className="text-xl font-medium">온리원의 명쾌한 해답은?</p>
-                                        <div className="p-8 bg-white text-slate-900 rounded-[3rem] shadow-2xl transform scale-105 border-4 border-orange-500/10">
-                                            <p className="text-2xl font-black leading-relaxed text-orange-600">“{selectedConcern.sol}”</p>
+                            {/* STEP 3: 해결 방안 분석 (전략 단계) */}
+                            {stage === 'strategy' && selectedConcern && (
+                                <div className="h-full flex flex-col p-8 justify-center bg-white animate-fade-in">
+                                    <div className="mb-8">
+                                        <span className="text-orange-500 font-black text-xs uppercase tracking-[0.2em] mb-3 block">Analysis & Insight</span>
+                                        <h3 className="text-2xl font-black text-slate-800 leading-tight">
+                                            전문가가 분석한<br/>진짜 원인과 해결 방향
+                                        </h3>
+                                    </div>
+                                    <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-inner mb-10">
+                                        <div className="flex items-center gap-2 mb-4 text-slate-400 font-black text-xs uppercase">
+                                            <Icons.Lightbulb /> 전문가 어드바이스
                                         </div>
-                                        <button onClick={() => setStage('demo')} className="w-full py-6 bg-orange-500 text-white rounded-[2rem] font-black text-xl shadow-2xl flex items-center justify-center gap-2 btn-active mt-8">
-                                            상세 시연 포인트 <Icons.ChevronRight />
+                                        <p className="text-lg font-bold text-slate-600 leading-relaxed italic">
+                                            "{selectedConcern.strategy}"
+                                        </p>
+                                    </div>
+                                    <button onClick={() => setStage('solution')} className="w-full py-5 bg-orange-500 text-white rounded-[2rem] font-black text-xl shadow-lg btn-active flex items-center justify-center gap-2">
+                                        온리원 솔루션 확인 <Icons.ChevronRight />
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* STEP 4: 온리원 솔루션 (이미지 삽입 예정지) */}
+                            {stage === 'solution' && selectedConcern && (
+                                <div className="h-full flex flex-col bg-slate-900 text-white p-10 text-center justify-center relative overflow-hidden animate-fade-in">
+                                    <div className="absolute top-[-10%] right-[-10%] w-80 h-80 bg-orange-600 rounded-full blur-[120px] opacity-30"></div>
+                                    
+                                    <div className="z-10 space-y-6">
+                                        <span className="text-orange-400 font-black text-xs uppercase tracking-[0.3em] block">The Perfect Solution</span>
+                                        <h3 className="text-2xl font-black leading-tight">
+                                            {selectedConcern.sol}
+                                        </h3>
+
+                                        {/* IMAGE PLACEHOLDER: 여기에 추후 솔루션 이미지 삽입 */}
+                                        <div className="w-full aspect-[4/3] bg-white/5 rounded-[2rem] border-2 border-dashed border-white/20 flex flex-col items-center justify-center p-6 text-white/40 shadow-2xl">
+                                            <div className="mb-3"><Icons.Lightbulb /></div>
+                                            <p className="text-xs font-bold leading-relaxed">
+                                                [온리원 솔루션 상세 이미지 영역]<br/>
+                                                (시각화된 학습 원리 및 결과 그래프 등)
+                                            </p>
+                                        </div>
+
+                                        <button 
+                                            onClick={() => setStage('final')}
+                                            className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-black text-xl shadow-xl btn-active mt-6"
+                                        >
+                                            상담 확정하기
                                         </button>
                                     </div>
                                 </div>
                             )}
 
-                            {stage === 'demo' && selectedConcern && (
-                                <div className="h-full flex flex-col p-10 justify-center bg-slate-50 animate-fade-in text-center">
-                                    <div className="mb-10">
-                                        <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-sm border border-blue-200">
-                                            <Icons.Monitor />
-                                        </div>
-                                        <span className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-3 block">Expert Demonstration</span>
-                                        <h3 className="text-3xl font-black text-slate-800">학습기 시연 가이드</h3>
-                                        <p className="text-slate-400 font-bold mt-3 text-sm italic">"어머님께 아래 핵심 기능을 직접 보여주세요"</p>
-                                    </div>
-                                    <div className="p-10 bg-white rounded-[3rem] border-2 border-blue-200 shadow-xl relative overflow-hidden mb-10 text-center">
-                                        <div className="flex items-center justify-center gap-2 mb-6 text-blue-600 font-black text-sm uppercase tracking-widest">
-                                            <Icons.Check /> 시연 포인트
-                                        </div>
-                                        <p className="text-xl font-bold text-slate-800 leading-relaxed italic">
-                                            “{selectedConcern.demo}”
-                                        </p>
-                                    </div>
-                                    <button onClick={() => setStage('final')} className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xl shadow-lg btn-active">상담 결과 확정하기</button>
-                                </div>
-                            )}
-
+                            {/* STEP 5: 최종 마무리 */}
                             {stage === 'final' && selectedConcern && (
                                 <div className="h-full flex flex-col p-10 text-center justify-center bg-white animate-fade-in">
                                     <div className="mb-8 text-green-500">
@@ -240,20 +304,22 @@
                                             <Icons.Check />
                                         </div>
                                     </div>
-                                    <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter italic">어머님의 고민,<br/><span className="text-orange-500">온리원</span>이 해결했습니다.</h2>
+                                    <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter">어머님의 고민,<br/><span className="text-orange-500 italic">온리원</span>이 해결합니다.</h2>
                                     <div className="space-y-4">
                                         <div className="p-7 bg-slate-50 rounded-[2rem] border-2 border-slate-100 text-left relative overflow-hidden">
-                                            <div className="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Prescription Summary</div>
+                                            <div className="flex items-center gap-2 mb-2 text-slate-500 font-black text-xs">
+                                                <Icons.MessageCircle /> 상담 처방 요약
+                                            </div>
                                             <p className="text-lg font-bold text-slate-800 leading-snug">
                                                 "{selectedConcern.text}" 해결을 위한<br/>
                                                 <span className="text-orange-600 font-black">맞춤 메타인지 로드맵</span> 설계를 마쳤습니다.
                                             </p>
                                         </div>
-                                        <button onClick={goHome} className="w-full py-6 bg-blue-600 text-white rounded-[2.5rem] font-black text-2xl shadow-2xl btn-active mt-4 flex flex-col items-center justify-center">
-                                            상담 완료 및 종료
+                                        <button onClick={goHome} className="w-full py-6 bg-blue-600 text-white rounded-[2.5rem] font-black text-2xl shadow-2xl btn-active mt-4">
+                                            상담 완료
                                         </button>
                                     </div>
-                                    <p className="mt-8 text-[11px] text-slate-400 font-bold tracking-widest uppercase italic">Learning Planner Assistant Tool | VISANG</p>
+                                    <p className="mt-8 text-[11px] text-slate-400 font-bold tracking-widest uppercase italic">Powered by VISANG OnlyOne</p>
                                 </div>
                             )}
                         </div>
