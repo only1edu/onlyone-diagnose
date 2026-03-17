@@ -1,248 +1,290 @@
-import React, { useState } from 'react';
-import { 
-  Baby, 
-  GraduationCap, 
-  ChevronRight, 
-  CheckCircle2, 
-  Lightbulb, 
-  Search, 
-  TrendingUp, 
-  Smartphone, 
-  Heart, 
-  Brain,
-  MessageCircle,
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  Clock,
-  ShieldCheck,
-  Zap
-} from 'lucide-react';
-
-const App = () => {
-  const [stage, setStage] = useState('select'); // select, concerns, solution, final
-  const [category, setCategory] = useState(null); // kids, elementary
-  const [selectedConcern, setSelectedConcern] = useState(null);
-
-  const data = {
-    kids: {
-      title: "온리원 키즈 (4~7세)",
-      img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600",
-      subtitle: "공부 근육의 시작, 즐거운 경험이 실력이 됩니다.",
-      concerns: [
-        { id: 1, text: "한글/수 떼기, 늦어지면 어쩌죠?", sol: "놀이가 공부가 되는 0.1% 메타인지 학습법으로 자연스러운 습득", icon: <BookOpen className="text-pink-500" /> },
-        { id: 2, text: "스마트 기기 노출, 중독될까 봐 무서워요.", sol: "학습 전용 모드와 AI 안심 관리 시스템으로 올바른 디지털 습관 형성", icon: <Smartphone className="text-blue-500" /> },
-        { id: 3, text: "벌써부터 공부를 지겨워하면 어떡하나요?", sol: "아이의 반응에 즉각 화답하는 인터랙티브 콘텐츠로 '공부 재미' 발견", icon: <Heart className="text-red-500" /> },
-        { id: 4, text: "초등학교 입학 준비, 무엇을 해야 할까요?", sol: "학교 교과 과정과 100% 연계된 입학 준비 완성 커리큘럼", icon: <GraduationCap className="text-green-500" /> },
-        { id: 5, text: "사고력과 창의력을 어떻게 길러주나요?", sol: "정답만 찾는 공부가 아닌, '왜?'를 생각하게 하는 질문 중심 학습", icon: <Lightbulb className="text-yellow-500" /> },
-      ]
-    },
-    elementary: {
-      title: "온리원 초등 (8~13세)",
-      img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600",
-      subtitle: "공부 구경은 끝, 이제 스스로 설명하는 진짜 공부를 합니다.",
-      concerns: [
-        { id: 1, text: "공부 습관이 안 잡혀서 매일 싸워요.", sol: "매일 30분, 스스로 계획하고 실천하는 AI 코칭 시스템", icon: <Clock className="text-indigo-500" /> },
-        { id: 2, text: "학원 시간표 채우기에 급급한 느낌이에요.", sol: "학원 뺑뺑이 대신, 부족한 부분만 골라 채우는 고밀도 맞춤 학습", icon: <Search className="text-orange-500" /> },
-        { id: 3, text: "분명히 아는 건데 자꾸 틀려와요.", sol: "‘아는 착각’을 제거하고 메타인지 인출 학습으로 완벽한 이해", icon: <Brain className="text-purple-500" /> },
-        { id: 4, text: "서술형 문제와 독해력을 너무 어려워해요.", sol: "어휘부터 구조까지 짚어주는 문해력 특화 솔루션", icon: <BookOpen className="text-emerald-500" /> },
-        { id: 5, text: "학년이 올라갈수록 성적 편차가 심해져요.", sol: "학년별 골든타임을 놓치지 않는 계통 중심 학습 관리", icon: <TrendingUp className="text-rose-500" /> },
-      ]
-    }
-  };
-
-  const handleStart = (cat) => {
-    setCategory(cat);
-    setStage('concerns');
-  };
-
-  const handleSelectConcern = (concern) => {
-    setSelectedConcern(concern);
-    setStage('solution');
-  };
-
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-100 p-4 font-sans">
-      {/* Consultation Tablet Frame */}
-      <div className="relative w-full max-w-[480px] aspect-[3/4.5] bg-white rounded-[3rem] border-[12px] border-slate-900 shadow-2xl overflow-hidden flex flex-col">
-        
-        {/* Branding Header */}
-        <div className="pt-8 px-8 flex justify-between items-center bg-white border-b border-slate-50 pb-4">
-          <div className="flex items-center gap-1.5 font-black text-[10px] tracking-widest text-slate-400 uppercase">
-            VISANG ONLYONE NEEDS FINDER
-          </div>
-          {stage !== 'select' && (
-            <button onClick={() => setStage('select')} className="text-slate-400 hover:text-slate-600 transition-colors">
-              <ArrowLeft size={20} />
-            </button>
-          )}
-        </div>
-
-        <div className="flex-grow overflow-hidden relative">
-          
-          {/* STEP 1: CATEGORY SELECTION */}
-          {stage === 'select' && (
-            <div className="h-full flex flex-col p-10 justify-center">
-              <div className="mb-12">
-                <span className="text-orange-500 font-black text-sm uppercase tracking-widest mb-2 block">Consultation Start</span>
-                <h1 className="text-4xl font-black text-slate-900 leading-tight tracking-tighter">
-                  자녀의 교육 고민,<br/>맞춤 처방을 시작합니다.
-                </h1>
-                <p className="text-slate-400 font-bold mt-4">우리 아이의 연령대를 선택해 주세요.</p>
-              </div>
-
-              <div className="grid grid-cols-1 gap-6">
-                <button 
-                  onClick={() => handleStart('kids')}
-                  className="group relative flex items-center gap-6 p-8 bg-pink-50 rounded-[2.5rem] border-2 border-pink-100 hover:border-pink-300 transition-all active:scale-95 text-left overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-pink-200/20 blur-3xl rounded-full"></div>
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:rotate-12 transition-transform text-pink-500">
-                    <Baby size={32} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-pink-900">온리원 키즈</h3>
-                    <p className="text-pink-600/70 font-bold text-sm">4세 ~ 7세 (유아/예비초등)</p>
-                  </div>
-                  <ChevronRight className="ml-auto text-pink-400" />
-                </button>
-
-                <button 
-                  onClick={() => handleStart('elementary')}
-                  className="group relative flex items-center gap-6 p-8 bg-blue-50 rounded-[2.5rem] border-2 border-blue-100 hover:border-blue-300 transition-all active:scale-95 text-left overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200/20 blur-3xl rounded-full"></div>
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:rotate-12 transition-transform text-blue-600">
-                    <GraduationCap size={32} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-blue-900">온리원 초등</h3>
-                    <p className="text-blue-600/70 font-bold text-sm">8세 ~ 13세 (초등학생)</p>
-                  </div>
-                  <ChevronRight className="ml-auto text-blue-400" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 2: 5 CONCERNS (이미지 배경 추가) */}
-          {stage === 'concerns' && category && (
-            <div className="h-full flex flex-col">
-              <div className="relative h-48 shrink-0">
-                <img src={data[category].img} className="w-full h-full object-cover" alt="category" />
-                <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-8">
-                    <div className="flex items-center gap-2 mb-1">
-                    {category === 'kids' ? <Baby size={16} className="text-pink-300" /> : <GraduationCap size={16} className="text-blue-300" />}
-                    <span className="font-black text-white/80 text-sm tracking-widest">{data[category].title}</span>
-                    </div>
-                    <h2 className="text-2xl font-black text-white leading-tight">
-                    어머님의 가장 큰<br/>학습 고민은 무엇인가요?
-                    </h2>
-                </div>
-              </div>
-
-              <div className="flex-grow p-6 space-y-3 overflow-y-auto custom-scrollbar bg-slate-50">
-                {data[category].concerns.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleSelectConcern(item)}
-                    className="w-full p-5 bg-white border border-slate-100 rounded-3xl text-left flex items-center gap-4 hover:border-orange-300 hover:shadow-lg transition-all group active:scale-95"
-                  >
-                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center shadow-sm text-lg">
-                      {item.icon}
-                    </div>
-                    <span className="font-bold text-slate-700 flex-grow leading-snug">{item.text}</span>
-                    <ChevronRight size={18} className="text-slate-300 group-hover:text-orange-500" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: SOLUTION REVEAL */}
-          {stage === 'solution' && selectedConcern && (
-            <div className="h-full flex flex-col bg-slate-900 text-white p-10 text-center justify-center relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-                <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600 rounded-full blur-[80px]"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-blue-600 rounded-full blur-[80px]"></div>
-              </div>
-
-              <div className="z-10 bg-white/10 p-5 rounded-[2.5rem] border border-white/20 mb-8 w-fit mx-auto animate-pulse">
-                <Zap size={48} className="text-yellow-300" />
-              </div>
-
-              <div className="z-10 space-y-6">
-                <div>
-                  <span className="text-orange-400 font-black text-xs uppercase tracking-widest mb-3 block">VISANG Customized Solution</span>
-                  <h3 className="text-2xl font-bold mb-4 leading-tight opacity-70">
-                    "{selectedConcern.text}"에 대한<br/>온리원 메타인지 솔루션
-                  </h3>
-                </div>
-
-                <div className="p-8 bg-white/10 backdrop-blur-md rounded-[3rem] border border-white/10 shadow-2xl scale-105 transition-transform">
-                  <p className="text-xl font-black leading-relaxed text-orange-400">
-                    {selectedConcern.sol}
-                  </p>
-                </div>
-                
-                <button 
-                  onClick={() => setStage('final')}
-                  className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-black text-xl shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all mt-6"
-                >
-                  기기 시연으로 확인 <ChevronRight size={24} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: FINAL CALL TO ACTION */}
-          {stage === 'final' && selectedConcern && (
-            <div className="h-full flex flex-col p-10 text-center justify-center bg-white">
-              <div className="mb-10">
-                 <CheckCircle2 size={80} className="text-green-500 mx-auto animate-bounce" />
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter">
-                어머님의 고민,<br/><span className="text-orange-500">온리원</span>이 답입니다.
-              </h2>
-              <p className="text-slate-400 font-bold mb-10 leading-relaxed">
-                지금 바로 태블릿 시연을 통해<br/>아이의 변화를 직접 목격하세요.
-              </p>
-              
-              <div className="space-y-4">
-                 <div className="p-6 bg-slate-50 rounded-3xl border-2 border-slate-100 text-left relative overflow-hidden">
-                    <div className="absolute right-[-10px] top-[-10px] opacity-5 text-slate-900">
-                        <MessageCircle size={80} />
-                    </div>
-                    <div className="flex items-center gap-2 mb-2 text-slate-500 font-black text-xs relative z-10">
-                        <ShieldCheck size={14} className="text-blue-500" /> 상담 처방 요약
-                    </div>
-                    <p className="text-slate-800 font-bold relative z-10">
-                        "{selectedConcern.text}" 해결을 위한<br/>메타인지 프로세스 설계를 시작합니다.
-                    </p>
-                 </div>
-                 
-                 <button className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xl shadow-xl active:scale-95 transition-all">
-                    지금 바로 기기 시연하기
-                 </button>
-              </div>
-            </div>
-          )}
-
-        </div>
-
-        {/* Bottom Home Indicator */}
-        <div className="h-6 w-full flex justify-center items-end pb-3">
-          <div className="w-24 h-1.5 rounded-full bg-slate-200"></div>
-        </div>
-      </div>
-
-      <style>{`
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>온리원 맞춤형 니즈 파인더</title>
+    <!-- 외부 라이브러리 로드 (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide 아이콘 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            background-color: #f1f5f9; 
+            touch-action: manipulation; 
+            margin: 0;
+            padding: 0;
+        }
+        /* 스크롤바 숨기기 */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-      `}</style>
-    </div>
-  );
-};
+        
+        /* 애니메이션 효과 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-export default App;
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // 아이콘 렌더링용 컴포넌트
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (window.lucide && iconRef.current) {
+                    const iconData = window.lucide.icons[name];
+                    if (iconData) {
+                        iconRef.current.innerHTML = iconData.toSvg({
+                            width: size,
+                            height: size,
+                            class: className,
+                            'stroke-width': 2.5
+                        });
+                    }
+                }
+            }, [name, size, className]);
+            return <div ref={iconRef} className={`inline-flex items-center justify-center ${className}`}></div>;
+        };
+
+        const App = () => {
+            const [stage, setStage] = useState('select'); // select, concerns, solution, final
+            const [category, setCategory] = useState(null); // kids, elementary
+            const [selectedConcern, setSelectedConcern] = useState(null);
+
+            const data = {
+                kids: {
+                    title: "온리원 키즈 (4~7세)",
+                    img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600",
+                    subtitle: "공부 근육의 시작, 즐거운 경험이 실력이 됩니다.",
+                    concerns: [
+                        { id: 1, text: "한글/수 떼기, 늦어지면 어쩌죠?", sol: "놀이가 공부가 되는 0.1% 메타인지 학습법으로 자연스러운 습득", icon: "book-open" },
+                        { id: 2, text: "스마트 기기 노출, 중독될까 봐 무서워요.", sol: "학습 전용 모드와 AI 안심 관리 시스템으로 올바른 디지털 습관 형성", icon: "smartphone" },
+                        { id: 3, text: "벌써부터 공부를 지겨워하면 어떡하나요?", sol: "아이의 반응에 즉각 화답하는 인터랙티브 콘텐츠로 '공부 재미' 발견", icon: "heart" },
+                        { id: 4, text: "초등학교 입학 준비, 무엇을 해야 할까요?", sol: "학교 교과 과정과 100% 연계된 입학 준비 완성 커리큘럼", icon: "graduation-cap" },
+                        { id: 5, text: "사고력과 창의력을 어떻게 길러주나요?", sol: "정답만 찾는 공부가 아닌, '왜?'를 생각하게 하는 질문 중심 학습", icon: "lightbulb" },
+                    ]
+                },
+                elementary: {
+                    title: "온리원 초등 (8~13세)",
+                    img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600",
+                    subtitle: "공부 구경은 끝, 이제 스스로 설명하는 진짜 공부를 합니다.",
+                    concerns: [
+                        { id: 1, text: "공부 습관이 안 잡혀서 매일 싸워요.", sol: "매일 30분, 스스로 계획하고 실천하는 AI 코칭 시스템", icon: "clock" },
+                        { id: 2, text: "학원 시간표 채우기에 급급한 느낌이에요.", sol: "학원 뺑뺑이 대신, 부족한 부분만 골라 채우는 고밀도 맞춤 학습", icon: "search" },
+                        { id: 3, text: "분명히 아는 건데 자꾸 틀려와요.", sol: "‘아는 착각’을 제거하고 메타인지 인출 학습으로 완벽한 이해", icon: "brain" },
+                        { id: 4, text: "서술형 문제와 독해력을 너무 어려워해요.", sol: "어휘부터 구조까지 짚어주는 문해력 특화 솔루션", icon: "book-text" },
+                        { id: 5, text: "학년이 올라갈수록 성적 편차가 심해져요.", sol: "학년별 골든타임을 놓치지 않는 계통 중심 학습 관리", icon: "trending-up" },
+                    ]
+                }
+            };
+
+            const handleStart = (cat) => {
+                setCategory(cat);
+                setStage('concerns');
+            };
+
+            const handleSelectConcern = (concern) => {
+                setSelectedConcern(concern);
+                setStage('solution');
+            };
+
+            return (
+                <div className="flex items-center justify-center min-h-screen p-0 sm:p-4">
+                    {/* Consultation Tablet Frame */}
+                    <div className="relative w-full max-w-[480px] aspect-[9/16] sm:aspect-[3/4.5] bg-white sm:rounded-[3rem] border-0 sm:border-[12px] border-slate-900 shadow-2xl overflow-hidden flex flex-col animate-fade-in">
+                        
+                        {/* Branding Header */}
+                        <div className="pt-8 px-8 flex justify-between items-center bg-white border-b border-slate-50 pb-4">
+                            <div className="flex items-center gap-1.5 font-black text-[10px] tracking-widest text-slate-400 uppercase">
+                                <Icon name="database" size={12} /> VISANG ONLYONE NEEDS FINDER
+                            </div>
+                            {stage !== 'select' && (
+                                <button onClick={() => setStage('select')} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                    <Icon name="arrow-left" size={20} />
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="flex-grow overflow-hidden relative">
+                            
+                            {/* STEP 1: CATEGORY SELECTION */}
+                            {stage === 'select' && (
+                                <div className="h-full flex flex-col p-10 justify-center animate-fade-in">
+                                    <div className="mb-12">
+                                        <span className="text-orange-500 font-black text-sm uppercase tracking-widest mb-2 block">Consultation Start</span>
+                                        <h1 className="text-4xl font-black text-slate-900 leading-tight tracking-tighter">
+                                            자녀의 교육 고민,<br/>맞춤 처방을 시작합니다.
+                                        </h1>
+                                        <p className="text-slate-400 font-bold mt-4">우리 아이의 연령대를 선택해 주세요.</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-6">
+                                        <button 
+                                            onClick={() => handleStart('kids')}
+                                            className="group relative flex items-center gap-6 p-8 bg-pink-50 rounded-[2.5rem] border-2 border-pink-100 hover:border-pink-300 transition-all active:scale-95 text-left overflow-hidden"
+                                        >
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-200/20 blur-3xl rounded-full"></div>
+                                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:rotate-12 transition-transform text-pink-500">
+                                                <Icon name="baby" size={32} />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-2xl font-black text-pink-900">온리원 키즈</h3>
+                                                <p className="text-pink-600/70 font-bold text-sm">4세 ~ 7세 (유아/예비초등)</p>
+                                            </div>
+                                            <Icon name="chevron-right" className="ml-auto text-pink-400" />
+                                        </button>
+
+                                        <button 
+                                            onClick={() => handleStart('elementary')}
+                                            className="group relative flex items-center gap-6 p-8 bg-blue-50 rounded-[2.5rem] border-2 border-blue-100 hover:border-blue-300 transition-all active:scale-95 text-left overflow-hidden"
+                                        >
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200/20 blur-3xl rounded-full"></div>
+                                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:rotate-12 transition-transform text-blue-600">
+                                                <Icon name="graduation-cap" size={32} />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-2xl font-black text-blue-900">온리원 초등</h3>
+                                                <p className="text-blue-600/70 font-bold text-sm">8세 ~ 13세 (초등학생)</p>
+                                            </div>
+                                            <Icon name="chevron-right" className="ml-auto text-blue-400" />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* STEP 2: CONCERNS */}
+                            {stage === 'concerns' && category && (
+                                <div className="h-full flex flex-col animate-fade-in">
+                                    <div className="relative h-48 shrink-0">
+                                        <img 
+                                            src={data[category].img} 
+                                            className="w-full h-full object-cover" 
+                                            alt="category" 
+                                            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=600'; }}
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-8">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <Icon name={category === 'kids' ? 'baby' : 'graduation-cap'} size={16} className="text-white" />
+                                                <span className="font-black text-white/80 text-sm tracking-widest">{data[category].title}</span>
+                                            </div>
+                                            <h2 className="text-2xl font-black text-white leading-tight">
+                                                어머님의 가장 큰<br/>학습 고민은 무엇인가요?
+                                            </h2>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-grow p-6 space-y-3 overflow-y-auto custom-scrollbar bg-slate-50">
+                                        {data[category].concerns.map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => handleSelectConcern(item)}
+                                                className="w-full p-5 bg-white border border-slate-100 rounded-3xl text-left flex items-center gap-4 hover:border-orange-300 hover:shadow-lg transition-all group active:scale-95"
+                                            >
+                                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center shadow-sm text-orange-500">
+                                                    <Icon name={item.icon} size={20} />
+                                                </div>
+                                                <span className="font-bold text-slate-700 flex-grow leading-snug">{item.text}</span>
+                                                <Icon name="chevron-right" size={18} className="text-slate-300 group-hover:text-orange-500" />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* STEP 3: SOLUTION REVEAL */}
+                            {stage === 'solution' && selectedConcern && (
+                                <div className="h-full flex flex-col bg-slate-900 text-white p-10 text-center justify-center relative overflow-hidden animate-fade-in">
+                                    <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+                                        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600 rounded-full blur-[80px]"></div>
+                                        <div className="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-blue-600 rounded-full blur-[80px]"></div>
+                                    </div>
+
+                                    <div className="z-10 bg-white/10 p-5 rounded-[2.5rem] border border-white/20 mb-8 w-fit mx-auto animate-pulse text-yellow-300">
+                                        <Icon name="zap" size={48} />
+                                    </div>
+
+                                    <div className="z-10 space-y-6">
+                                        <div>
+                                            <span className="text-orange-400 font-black text-xs uppercase tracking-widest mb-3 block">VISANG Customized Solution</span>
+                                            <h3 className="text-2xl font-bold mb-4 leading-tight opacity-70">
+                                                "{selectedConcern.text}"에 대한<br/>온리원 메타인지 솔루션
+                                            </h3>
+                                        </div>
+
+                                        <div className="p-8 bg-white/10 backdrop-blur-md rounded-[3rem] border border-white/10 shadow-2xl scale-105 transition-transform">
+                                            <p className="text-xl font-black leading-relaxed text-orange-400">
+                                                {selectedConcern.sol}
+                                            </p>
+                                        </div>
+                                        
+                                        <button 
+                                            onClick={() => setStage('final')}
+                                            className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-black text-xl shadow-2xl flex items-center justify-center gap-2 active:scale-95 transition-all mt-6"
+                                        >
+                                            기기 시연으로 확인 <Icon name="chevron-right" size={24} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* STEP 4: FINAL CALL TO ACTION */}
+                            {stage === 'final' && selectedConcern && (
+                                <div className="h-full flex flex-col p-10 text-center justify-center bg-white animate-fade-in">
+                                    <div className="mb-10 text-green-500">
+                                        <Icon name="check-circle-2" size={80} className="mx-auto" />
+                                    </div>
+                                    <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter">
+                                        어머님의 고민,<br/><span className="text-orange-500">온리원</span>이 답입니다.
+                                    </h2>
+                                    <p className="text-slate-400 font-bold mb-10 leading-relaxed">
+                                        지금 바로 태블릿 시연을 통해<br/>아이의 변화를 직접 목격하세요.
+                                    </p>
+                                    
+                                    <div className="space-y-4">
+                                        <div className="p-6 bg-slate-50 rounded-3xl border-2 border-slate-100 text-left relative overflow-hidden">
+                                            <div className="absolute right-[-10px] top-[-10px] opacity-5 text-slate-900">
+                                                <Icon name="message-circle" size={80} />
+                                            </div>
+                                            <div className="flex items-center gap-2 mb-2 text-slate-500 font-black text-xs relative z-10">
+                                                <Icon name="shield-check" size={14} className="text-blue-500" /> 상담 처방 요약
+                                            </div>
+                                            <p className="text-slate-800 font-bold relative z-10">
+                                                "{selectedConcern.text}" 해결을 위한<br/>메타인지 프로세스 설계를 시작합니다.
+                                            </p>
+                                        </div>
+                                        
+                                        <button className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xl shadow-xl active:scale-95 transition-all">
+                                            지금 바로 기기 시연하기
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
+
+                        {/* Bottom Home Indicator */}
+                        <div className="h-6 w-full flex justify-center items-end pb-3">
+                            <div className="w-24 h-1.5 rounded-full bg-slate-200"></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
