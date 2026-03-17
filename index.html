@@ -92,7 +92,8 @@
             const [selectedConcern, setSelectedConcern] = useState(null);
             const [contentIndex, setContentIndex] = useState(0);
 
-            // 모든 항목에 요청하신 '공감메시지1_개뼈노트.jpg'를 기본 이미지로 설정
+            // 모든 항목에 요청하신 '공감메시지1_개뼈노트.jpg'를 기본 이미지로 설정 (테스트용)
+            // 추후 여러 장을 넣으려면 배열 안에 {type, url} 객체를 추가하면 됩니다.
             const commonContents = [
                 { type: 'image', url: '공감메시지1_개뼈노트.jpg' }
             ];
@@ -143,9 +144,10 @@
 
             return (
                 <div className="flex items-center justify-center min-h-screen p-0 sm:p-4 bg-slate-200">
+                    {/* Tablet View Emulator */}
                     <div className="relative w-full max-w-[480px] h-[100vh] sm:h-[850px] bg-white sm:rounded-[3.5rem] border-0 sm:border-[12px] border-slate-950 shadow-2xl overflow-hidden flex flex-col">
                         
-                        {/* 상단 네비게이션 */}
+                        {/* 1. 상단 네비게이션 바 */}
                         <div className="pt-10 px-6 flex justify-between items-center bg-white border-b border-slate-100 pb-4 z-50">
                             <div className="flex items-center gap-3">
                                 {stage !== 'select' && (
@@ -154,7 +156,15 @@
                                     </button>
                                 )}
                                 <div className="h-8 flex items-center">
-                                    <img src="온리원로고.JPG" alt="OnlyOne" className="h-full object-contain" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
+                                    <img 
+                                        src="온리원로고.JPG" 
+                                        alt="OnlyOne" 
+                                        className="h-full object-contain" 
+                                        onError={(e) => { 
+                                            e.target.style.display='none'; 
+                                            e.target.nextSibling.style.display='block'; 
+                                        }} 
+                                    />
                                     <span style={{display: 'none'}} className="font-black text-red-600 text-xl tracking-tighter italic uppercase">OnlyOne</span>
                                 </div>
                             </div>
@@ -210,7 +220,7 @@
                                 </div>
                             )}
 
-                            {/* STEP 3: 전략 분석 */}
+                            {/* STEP 3: 전략 분석 (Expert Advice) */}
                             {stage === 'strategy' && selectedConcern && (
                                 <div className="h-full flex flex-col p-8 justify-center bg-white animate-fade-in text-center">
                                     <div className="mb-10">
@@ -231,62 +241,70 @@
                                 </div>
                             )}
 
-                            {/* STEP 4: 온리원 솔루션 (실제 이미지 적용) */}
+                            {/* STEP 4: 온리원 솔루션 (이미지 및 영상 감상 단계) */}
                             {stage === 'solution' && selectedConcern && (
-                                <div className="h-full flex flex-col bg-slate-900 text-white animate-fade-in relative">
-                                    {/* 헤더 바 */}
-                                    <div className="pt-10 pb-6 px-8 text-center border-b border-white/5 bg-slate-950/50 backdrop-blur-sm">
-                                        <span className="text-orange-400 font-black text-xs uppercase tracking-[0.3em] block mb-2">The Best Answer</span>
-                                        <h3 className="text-xl font-black leading-tight italic">{selectedConcern.sol}</h3>
+                                <div className="h-full flex flex-col bg-slate-900 text-white animate-fade-in relative overflow-hidden">
+                                    {/* 헤더 정보 */}
+                                    <div className="pt-10 pb-6 px-8 text-center border-b border-white/5 bg-slate-950/50 backdrop-blur-sm z-10">
+                                        <span className="text-orange-400 font-black text-[10px] uppercase tracking-[0.3em] block mb-2">The Best Solution ({contentIndex + 1}/{selectedConcern.contents.length})</span>
+                                        <h3 className="text-xl font-black leading-tight italic tracking-tighter">{selectedConcern.sol}</h3>
                                     </div>
 
-                                    {/* 이미지 메인 영역 (공감메시지1_개뼈노트.jpg 노출) */}
-                                    <div className="flex-grow flex items-center justify-center p-4 overflow-y-auto custom-scrollbar">
-                                        <div className="w-full rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] bg-black border border-white/10">
+                                    {/* 이미지/영상 메인 영역 */}
+                                    <div className="flex-grow flex items-center justify-center p-4 relative z-0">
+                                        <div className="w-full h-full rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] bg-black border border-white/10 flex items-center justify-center">
                                             {selectedConcern.contents[contentIndex].type === 'video' ? (
-                                                <div className="video-container">
-                                                    <iframe src={selectedConcern.contents[contentIndex].url} frameBorder="0" allowFullScreen></iframe>
+                                                <div className="video-container w-full">
+                                                    <iframe 
+                                                        src={selectedConcern.contents[contentIndex].url} 
+                                                        frameBorder="0" 
+                                                        allowFullScreen
+                                                    ></iframe>
                                                 </div>
                                             ) : (
                                                 <img 
                                                     src={selectedConcern.contents[contentIndex].url} 
-                                                    alt="OnlyOne Solution" 
-                                                    className="w-full h-auto object-contain"
-                                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/600x1200?text=이미지+로딩+실패'; }}
+                                                    alt="Solution Content" 
+                                                    className="w-full h-full object-contain"
+                                                    onError={(e) => { 
+                                                        e.target.src = 'https://via.placeholder.com/600x1200?text=이미지+파일명+확인+필요'; 
+                                                    }}
                                                 />
                                             )}
                                         </div>
+
+                                        {/* 콘텐츠 네비게이션 버튼 (콘텐츠가 여러 개일 때만 노출) */}
+                                        {selectedConcern.contents.length > 1 && (
+                                            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-6 pointer-events-none">
+                                                <button 
+                                                    onClick={() => setContentIndex(prev => Math.max(0, prev - 1))}
+                                                    className={`w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white pointer-events-auto btn-active flex items-center justify-center border border-white/20 ${contentIndex === 0 ? 'opacity-10' : 'opacity-100'}`}
+                                                    disabled={contentIndex === 0}
+                                                >
+                                                    <Icons.ChevronLeft />
+                                                </button>
+                                                <button 
+                                                    onClick={() => setContentIndex(prev => Math.min(selectedConcern.contents.length - 1, prev + 1))}
+                                                    className={`w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white pointer-events-auto btn-active flex items-center justify-center border border-white/20 ${contentIndex === selectedConcern.contents.length - 1 ? 'opacity-10' : 'opacity-100'}`}
+                                                    disabled={contentIndex === selectedConcern.contents.length - 1}
+                                                >
+                                                    <Icons.ChevronRight />
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
-                                    {/* 슬라이드 조작 (이미지가 여러 개일 경우 대비) */}
-                                    {selectedConcern.contents.length > 1 && (
-                                        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
-                                            <button 
-                                                onClick={() => setContentIndex(prev => Math.max(0, prev - 1))}
-                                                className={`w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white pointer-events-auto btn-active flex items-center justify-center ${contentIndex === 0 ? 'opacity-20' : ''}`}
-                                            >
-                                                <Icons.ChevronLeft />
-                                            </button>
-                                            <button 
-                                                onClick={() => setContentIndex(prev => Math.min(selectedConcern.contents.length - 1, prev + 1))}
-                                                className={`w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white pointer-events-auto btn-active flex items-center justify-center ${contentIndex === selectedConcern.contents.length - 1 ? 'opacity-20' : ''}`}
-                                            >
-                                                <Icons.ChevronRight />
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {/* 하단 브랜드 태그 */}
-                                    <div className="py-6 px-8 text-center bg-slate-950/80 border-t border-white/5">
-                                        <p className="text-[10px] text-white/40 font-bold tracking-[0.3em] uppercase italic leading-none">
-                                            Always with your child | VISANG OnlyOne
+                                    {/* 하단 정보 레이블 */}
+                                    <div className="py-6 px-8 text-center bg-slate-950/80 border-t border-white/5 z-10">
+                                        <p className="text-[10px] text-white/40 font-bold tracking-[0.3em] uppercase italic">
+                                            Trusted by 1M+ Parents | VISANG OnlyOne
                                         </p>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* 바닥 홈 바 */}
+                        {/* 바닥 홈 바 인디케이터 */}
                         <div className="h-10 w-full bg-white flex justify-center items-end pb-4">
                             <div className="w-32 h-1.5 rounded-full bg-slate-200"></div>
                         </div>
